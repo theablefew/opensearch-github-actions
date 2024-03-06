@@ -1,0 +1,24 @@
+name: OpenSearch Github Action
+
+on: [push, pull_request]
+
+jobs:
+  run-action:
+    name: Start OpenSearch
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        opensearch: ["2.12.0"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Start OpenSearch
+        uses: ./opensearch
+        with:
+          security-disabled: true
+          version: ${{ matrix.opensearch }}
+
+      - name: OpenSearch is reachable
+        run: |
+          curl --verbose --show-error http://localhost:9200 -ku admin:admin
